@@ -4,7 +4,7 @@
       <div class="q-mb-xl">
         <q-input v-model="tempData.name" label="姓名" />
         <q-input v-model="tempData.age" label="年齡" />
-        <q-btn color="primary" class="q-mt-md">新增</q-btn>
+        <q-btn color="primary" class="q-mt-md" label="新增" @click="handleClickOption('add', tempData)">新增</q-btn>
       </div>
 
       <q-table
@@ -124,7 +124,60 @@ const tempData = ref({
   age: '',
 });
 function handleClickOption(btn, data) {
-  // ...
+      const baseUrl = "https://dahua.metcfire.com.tw/api/CRUDTest";
+      try {
+        let response;
+
+        switch (btn) {
+          case "add": // 新增
+            if (!data.name) {
+              this.$q.notify({ type: "warning", message: "姓名不得空白！" });
+              return;
+            } else if (!data.age) {
+              this.$q.notify({ type: "warning", message: "年齡不得空白！" });
+              return;
+            } else {
+              response = await axios.post(baseUrl, {
+              name: data.name,
+              age: data.age,
+              });
+              this.$q.notify({ type: "positive", message: "新增成功！" });
+              break;
+            }
+
+          case "edit": // 修改
+            response = await axios.patch(baseUrl, {
+              id: data.id,
+              name: data.name,
+              age: data.age,
+            });
+            this.$q.notify({ type: "positive", message: "修改成功！" });
+            break;
+
+          case "delete": // 刪除
+            if (!data.id) {
+              this.$q.notify({ type: "warning", message: "缺少 ID，無法刪除！" });
+              return;
+            }
+            response = await axios.delete(`${baseUrl}/${data.id}`);
+            this.$q.notify({ type: "positive", message: "刪除成功！" });
+            break;
+
+          case "search": // 查詢
+            response = await axios.get(`${baseUrl}/a`);
+            this.$q.notify({ type: "positive", message: "查詢成功！" });
+            break;
+
+          default:
+            return;
+        }
+
+        this.responseData = response.data;
+
+      } catch (error) {
+        console.error("error：", error);
+        this.$q.notify({ type: "negative", message: "error" });
+      }
 }
 </script>
 
