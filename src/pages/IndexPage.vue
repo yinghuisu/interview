@@ -4,7 +4,7 @@
       <div class="q-mb-xl">
         <q-input v-model="tempData.name" label="姓名" />
         <q-input v-model="tempData.age" label="年齡" />
-        <q-btn color="primary" class="q-mt-md">新增</q-btn>
+        <q-btn color="primary" class="q-mt-md" label="新增" @click="handleClickOption('add', tempData)">新增</q-btn>
       </div>
 
       <q-table
